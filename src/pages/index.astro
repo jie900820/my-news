@@ -84,6 +84,35 @@ const rest = posts.slice(1);
 			</section>
 		</main>
 
+		<!-- IG 精選 -->
+		<section class="ig-section">
+			<div class="ig-inner">
+				<h2 class="section-title">📸 IG 拉麵精選</h2>
+				<p class="ig-desc">來自 Instagram 的拉麵美照，看看大家都在吃什麼</p>
+				<div class="ig-grid">
+					<blockquote
+						class="instagram-media"
+						data-instgrm-permalink="https://www.instagram.com/p/C7k2v3ySq0j/"
+						data-instgrm-version="14"
+						style="max-width:320px; min-width:260px; width:100%;">
+					</blockquote>
+					<blockquote
+						class="instagram-media"
+						data-instgrm-permalink="https://www.instagram.com/p/C6tqW2yyIAL/"
+						data-instgrm-version="14"
+						style="max-width:320px; min-width:260px; width:100%;">
+					</blockquote>
+					<blockquote
+						class="instagram-media"
+						data-instgrm-permalink="https://www.instagram.com/p/C5k8v3ySq0j/"
+						data-instgrm-version="14"
+						style="max-width:320px; min-width:260px; width:100%;">
+					</blockquote>
+				</div>
+				<script async src="https://www.instagram.com/embed.js"></script>
+			</div>
+		</section>
+
 		<Footer />
 	</body>
 </html>
@@ -285,6 +314,44 @@ const rest = posts.slice(1);
 		font-size: 0.78em;
 		color: #666;
 		margin: 0;
+	}
+
+	/* IG Section */
+	.ig-section {
+		background: #111;
+		border-top: 1px solid #333;
+		padding: 3.5em 1.5em;
+	}
+	.ig-inner {
+		max-width: 1060px;
+		margin: auto;
+	}
+	.ig-inner .section-title {
+		font-size: 1.1em;
+		font-weight: 700;
+		color: #a09880;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin: 0 0 0.4em;
+		padding-bottom: 0.6em;
+		border-bottom: 1px solid #333;
+	}
+	.ig-desc {
+		font-size: 0.9em;
+		color: #666;
+		margin: 0 0 1.8em;
+	}
+	.ig-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.2em;
+		justify-content: center;
+	}
+	.ig-grid .instagram-media {
+		flex: 1 1 260px;
+		max-width: 320px;
+		border-radius: 12px !important;
+		overflow: hidden;
 	}
 
 	/* RWD */
