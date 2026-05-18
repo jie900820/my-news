@@ -6,6 +6,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 
 const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.props;
+const pageUrl = `https://jie900820.github.io/my-news${Astro.url.pathname}`;
 ---
 
 <html lang="zh-TW">
@@ -13,6 +14,21 @@ const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.prop
 		<BaseHead title={title} description={description} />
 	</head>
 	<body>
+		<!-- Facebook SDK -->
+		<div id="fb-root"></div>
+		<script>
+			window.fbAsyncInit = function() {
+				FB.init({ appId: '966242223397117', xfbml: true, version: 'v19.0' });
+			};
+			(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "https://connect.facebook.net/zh_TW/sdk.js";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+
 		<Header />
 		<main>
 			<article>
@@ -36,9 +52,40 @@ const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.prop
 								{tags.map(tag => <span class="tag">#{tag}</span>)}
 							</div>
 						)}
+
+						<!-- FB 分享 + Like 按鈕列 -->
+						<div class="fb-actions">
+							<div class="fb-like"
+								data-href={pageUrl}
+								data-width=""
+								data-layout="button_count"
+								data-action="like"
+								data-size="large"
+								data-share="false">
+							</div>
+							<div class="fb-share-button"
+								data-href={pageUrl}
+								data-layout="button"
+								data-size="large">
+							</div>
+						</div>
+
 						<hr />
 					</header>
+
 					<slot />
+
+					<!-- FB 留言區 -->
+					<div class="comments-section">
+						<h2 class="comments-title">💬 留言討論</h2>
+						<p class="comments-desc">用你的 Facebook 帳號留言，和其他拉麵愛好者交流</p>
+						<div class="fb-comments"
+							data-href={pageUrl}
+							data-width="100%"
+							data-numposts="5"
+							data-colorscheme="dark">
+						</div>
+					</div>
 				</div>
 			</article>
 		</main>
@@ -47,69 +94,44 @@ const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.prop
 </html>
 
 <style>
-	main {
-		width: calc(100% - 2em);
-		max-width: 100%;
-		margin: 0;
-		padding: 0;
-	}
-	.hero-image {
-		width: 100%;
-		max-height: 460px;
-		overflow: hidden;
-	}
-	.hero-image img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 0;
-		display: block;
-	}
-	.prose {
-		width: 720px;
-		max-width: calc(100% - 2em);
-		margin: auto;
-		padding: 2.5em 1em 4em;
-	}
-	.post-header {
-		margin-bottom: 2em;
-	}
-	.meta {
-		font-size: 0.85em;
-		color: #666;
-		margin-bottom: 0.8em;
-	}
+	main { width: calc(100% - 2em); max-width: 100%; margin: 0; padding: 0; }
+	.hero-image { width: 100%; max-height: 460px; overflow: hidden; }
+	.hero-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; }
+	.prose { width: 720px; max-width: calc(100% - 2em); margin: auto; padding: 2.5em 1em 4em; }
+	.post-header { margin-bottom: 2em; }
+	.meta { font-size: 0.85em; color: #666; margin-bottom: 0.8em; }
 	.updated { color: #555; }
-	.post-header h1 {
-		font-size: 2.2em;
-		line-height: 1.25;
-		margin: 0 0 0.5em;
-		color: #F5F0E8;
-	}
-	.description {
-		font-size: 1.05em;
-		color: #a09880;
-		margin: 0 0 1em;
-		line-height: 1.7;
-	}
-	.tags {
+	.post-header h1 { font-size: 2.2em; line-height: 1.25; margin: 0 0 0.5em; color: #F5F0E8; }
+	.description { font-size: 1.05em; color: #a09880; margin: 0 0 1em; line-height: 1.7; }
+	.tags { display: flex; flex-wrap: wrap; gap: 0.4em; margin-bottom: 1em; }
+	.tag { font-size: 0.78em; background: rgba(192,57,43,0.2); color: #E67E22; padding: 0.2em 0.6em; border-radius: 999px; border: 1px solid rgba(192,57,43,0.3); }
+
+	/* FB 按鈕列 */
+	.fb-actions {
 		display: flex;
+		align-items: center;
+		gap: 1em;
+		margin: 1em 0 1.2em;
 		flex-wrap: wrap;
-		gap: 0.4em;
-		margin-bottom: 1.2em;
 	}
-	.tag {
-		font-size: 0.78em;
-		background: rgba(192,57,43,0.2);
-		color: #E67E22;
-		padding: 0.2em 0.6em;
-		border-radius: 999px;
-		border: 1px solid rgba(192,57,43,0.3);
-	}
-	hr {
-		border: none;
+
+	hr { border: none; border-top: 1px solid #333; margin: 1.5em 0 2em; }
+
+	/* 留言區 */
+	.comments-section {
+		margin-top: 3.5em;
+		padding-top: 2.5em;
 		border-top: 1px solid #333;
-		margin: 1.5em 0 2em;
+	}
+	.comments-title {
+		font-size: 1.3em;
+		color: #F5F0E8;
+		margin: 0 0 0.3em;
+	}
+	.comments-desc {
+		font-size: 0.88em;
+		color: #666;
+		margin: 0 0 1.5em;
 	}
 
 	@media (max-width: 720px) {
