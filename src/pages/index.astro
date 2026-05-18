@@ -13,6 +13,7 @@ const posts = (await getCollection('blog')).sort(
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const featured = posts[0];
 const rest = posts.slice(1);
+const pageUrl = 'https://jie900820.github.io/my-news/';
 ---
 
 <!doctype html>
@@ -21,6 +22,21 @@ const rest = posts.slice(1);
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
+		<!-- Facebook SDK -->
+		<div id="fb-root"></div>
+		<script>
+			window.fbAsyncInit = function() {
+				FB.init({ appId: '966242223397117', xfbml: true, version: 'v19.0' });
+			};
+			(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s); js.id = id;
+				js.src = "https://connect.facebook.net/zh_TW/sdk.js";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+
 		<Header />
 
 		<!-- Hero -->
@@ -29,59 +45,101 @@ const rest = posts.slice(1);
 				<p class="hero-eyebrow">🗺️ 台北拉麵指南</p>
 				<h1>找到你的<br/><span class="highlight">那一碗麵</span></h1>
 				<p class="hero-desc">整理台北不同風格的拉麵店，包含湯頭特色、麵體口感、排隊狀況與個人心得。不論你喜歡濃厚豚骨、清爽雞白湯、魚介系還是限定口味，都能快速找到適合你的拉麵。</p>
-				<a class="hero-btn" href={`${base}/blog`}>瀏覽所有文章 →</a>
+				<div class="hero-actions">
+					<a class="hero-btn" href={`${base}/blog`}>瀏覽所有文章 →</a>
+					<!-- FB 分享按鈕 -->
+					<div class="fb-share-button"
+						data-href={pageUrl}
+						data-layout="button"
+						data-size="large">
+					</div>
+				</div>
 			</div>
 		</section>
 
 		<main>
-			<!-- Featured post -->
-			{featured && (
-				<section class="featured-section">
-					<h2 class="section-title">精選文章</h2>
-					<a class="featured-card" href={`${base}/blog/${featured.id}/`}>
-						{featured.data.heroImage && (
-							<div class="featured-img">
-								<Image width={800} height={400} src={featured.data.heroImage} alt={featured.data.title} />
-							</div>
-						)}
-						<div class="featured-body">
-							<div class="tags">
-								{featured.data.tags?.map(tag => <span class="tag">#{tag}</span>)}
-							</div>
-							<h3>{featured.data.title}</h3>
-							<p class="desc">{featured.data.description}</p>
-							<p class="date"><FormattedDate date={featured.data.pubDate} /></p>
-							<span class="read-more">閱讀全文 →</span>
-						</div>
-					</a>
-				</section>
-			)}
-
-			<!-- Post grid -->
-			<section class="grid-section">
-				<h2 class="section-title">最新文章</h2>
-				<ul class="post-grid">
-					{rest.map(post => (
-						<li>
-							<a class="post-card" href={`${base}/blog/${post.id}/`}>
-								{post.data.heroImage && (
-									<div class="card-img">
-										<Image width={400} height={220} src={post.data.heroImage} alt={post.data.title} />
+			<div class="content-with-sidebar">
+				<div class="content-main">
+					<!-- Featured post -->
+					{featured && (
+						<section class="featured-section">
+							<h2 class="section-title">精選文章</h2>
+							<a class="featured-card" href={`${base}/blog/${featured.id}/`}>
+								{featured.data.heroImage && (
+									<div class="featured-img">
+										<Image width={800} height={400} src={featured.data.heroImage} alt={featured.data.title} />
 									</div>
 								)}
-								<div class="card-body">
+								<div class="featured-body">
 									<div class="tags">
-										{post.data.tags?.slice(0,2).map(tag => <span class="tag">#{tag}</span>)}
+										{featured.data.tags?.map(tag => <span class="tag">#{tag}</span>)}
 									</div>
-									<h4>{post.data.title}</h4>
-									<p class="desc">{post.data.description}</p>
-									<p class="date"><FormattedDate date={post.data.pubDate} /></p>
+									<h3>{featured.data.title}</h3>
+									<p class="desc">{featured.data.description}</p>
+									<p class="date"><FormattedDate date={featured.data.pubDate} /></p>
+									<span class="read-more">閱讀全文 →</span>
 								</div>
 							</a>
-						</li>
-					))}
-				</ul>
-			</section>
+						</section>
+					)}
+
+					<!-- Post grid -->
+					<section class="grid-section">
+						<h2 class="section-title">最新文章</h2>
+						<ul class="post-grid">
+							{rest.map(post => (
+								<li>
+									<a class="post-card" href={`${base}/blog/${post.id}/`}>
+										{post.data.heroImage && (
+											<div class="card-img">
+												<Image width={400} height={220} src={post.data.heroImage} alt={post.data.title} />
+											</div>
+										)}
+										<div class="card-body">
+											<div class="tags">
+												{post.data.tags?.slice(0,2).map(tag => <span class="tag">#{tag}</span>)}
+											</div>
+											<h4>{post.data.title}</h4>
+											<p class="desc">{post.data.description}</p>
+											<p class="date"><FormattedDate date={post.data.pubDate} /></p>
+										</div>
+									</a>
+								</li>
+							))}
+						</ul>
+					</section>
+				</div>
+
+				<!-- Sidebar: FB Page Plugin -->
+				<aside class="sidebar">
+					<div class="sidebar-card">
+						<h3 class="sidebar-title">📘 追蹤我們</h3>
+						<p class="sidebar-desc">在 Facebook 追蹤台北拉麵地圖，第一時間收到最新文章</p>
+						<div class="fb-page"
+							data-href="https://www.facebook.com/ramen.taipei.map"
+							data-tabs="timeline"
+							data-width="280"
+							data-height="400"
+							data-small-header="true"
+							data-adapt-container-width="true"
+							data-hide-cover="false"
+							data-show-facepile="true">
+							<blockquote cite="https://www.facebook.com/ramen.taipei.map" class="fb-xfbml-parse-ignore">
+								<a href="https://www.facebook.com/ramen.taipei.map">台北拉麵地圖</a>
+							</blockquote>
+						</div>
+					</div>
+
+					<div class="sidebar-card">
+						<h3 class="sidebar-title">📸 IG 精選</h3>
+						<p class="sidebar-desc">追蹤我們的 Instagram 看更多拉麵美照</p>
+						<a class="ig-follow-btn" href="https://www.instagram.com/ramen.taipei/" target="_blank" rel="noopener">
+							<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+							@ramen.taipei
+						</a>
+					</div>
+				</aside>
+			</div>
 		</main>
 
 		<!-- IG 精選 -->
@@ -90,20 +148,17 @@ const rest = posts.slice(1);
 				<h2 class="section-title">📸 IG 拉麵精選</h2>
 				<p class="ig-desc">來自 Instagram 的拉麵美照，看看大家都在吃什麼</p>
 				<div class="ig-grid">
-					<blockquote
-						class="instagram-media"
+					<blockquote class="instagram-media"
 						data-instgrm-permalink="https://www.instagram.com/p/C7k2v3ySq0j/"
 						data-instgrm-version="14"
 						style="max-width:320px; min-width:260px; width:100%;">
 					</blockquote>
-					<blockquote
-						class="instagram-media"
+					<blockquote class="instagram-media"
 						data-instgrm-permalink="https://www.instagram.com/p/C6tqW2yyIAL/"
 						data-instgrm-version="14"
 						style="max-width:320px; min-width:260px; width:100%;">
 					</blockquote>
-					<blockquote
-						class="instagram-media"
+					<blockquote class="instagram-media"
 						data-instgrm-permalink="https://www.instagram.com/p/C5k8v3ySq0j/"
 						data-instgrm-version="14"
 						style="max-width:320px; min-width:260px; width:100%;">
@@ -124,238 +179,117 @@ const rest = posts.slice(1);
 		border-bottom: 1px solid #333;
 		padding: 5em 1.5em 4em;
 	}
-	.hero-inner {
-		max-width: 680px;
-		margin: auto;
-	}
+	.hero-inner { max-width: 680px; margin: auto; }
 	.hero-eyebrow {
-		font-size: 0.9em;
-		color: #E67E22;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		margin: 0 0 0.8em;
+		font-size: 0.9em; color: #E67E22;
+		letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 0.8em;
 	}
-	.hero h1 {
-		font-size: 3em;
-		line-height: 1.15;
-		margin: 0 0 0.6em;
-		color: #F5F0E8;
-	}
-	.highlight {
-		color: #E67E22;
-	}
-	.hero-desc {
-		font-size: 1.05em;
-		color: #a09880;
-		max-width: 560px;
-		margin: 0 0 1.8em;
-		line-height: 1.8;
-	}
+	.hero h1 { font-size: 3em; line-height: 1.15; margin: 0 0 0.6em; color: #F5F0E8; }
+	.highlight { color: #E67E22; }
+	.hero-desc { font-size: 1.05em; color: #a09880; max-width: 560px; margin: 0 0 1.8em; line-height: 1.8; }
+	.hero-actions { display: flex; align-items: center; gap: 1.2em; flex-wrap: wrap; }
 	.hero-btn {
-		display: inline-block;
-		background: #C0392B;
-		color: #F5F0E8;
-		padding: 0.7em 1.6em;
-		border-radius: 8px;
-		font-weight: 600;
-		font-size: 0.95em;
-		text-decoration: none;
-		transition: background 0.2s, transform 0.15s;
+		display: inline-block; background: #C0392B; color: #F5F0E8;
+		padding: 0.7em 1.6em; border-radius: 8px; font-weight: 600; font-size: 0.95em;
+		text-decoration: none; transition: background 0.2s, transform 0.15s;
 	}
-	.hero-btn:hover {
-		background: #E67E22;
-		color: #fff;
-		transform: translateY(-1px);
+	.hero-btn:hover { background: #E67E22; color: #fff; transform: translateY(-1px); }
+
+	/* Layout with sidebar */
+	.content-with-sidebar {
+		max-width: 1060px;
+		margin: auto;
+		padding: 2.5em 1em 3em;
+		display: grid;
+		grid-template-columns: 1fr 300px;
+		gap: 2.5em;
+		align-items: start;
 	}
+	.content-main { min-width: 0; }
+
+	/* Sidebar */
+	.sidebar { display: flex; flex-direction: column; gap: 1.5em; }
+	.sidebar-card {
+		background: #242424;
+		border: 1px solid #333;
+		border-radius: 12px;
+		padding: 1.4em;
+	}
+	.sidebar-title {
+		font-size: 0.95em; font-weight: 700; color: #F5F0E8;
+		margin: 0 0 0.4em; letter-spacing: 0.02em;
+	}
+	.sidebar-desc { font-size: 0.82em; color: #666; margin: 0 0 1em; line-height: 1.5; }
+	.ig-follow-btn {
+		display: inline-flex; align-items: center; gap: 0.5em;
+		background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+		color: #fff; padding: 0.6em 1.2em; border-radius: 8px;
+		font-size: 0.88em; font-weight: 600; text-decoration: none;
+		transition: opacity 0.2s, transform 0.15s;
+	}
+	.ig-follow-btn:hover { opacity: 0.88; transform: translateY(-1px); color: #fff; }
 
 	/* Section titles */
 	.section-title {
-		font-size: 1.1em;
-		font-weight: 700;
-		color: #a09880;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		margin: 0 0 1.2em;
-		padding-bottom: 0.6em;
-		border-bottom: 1px solid #333;
+		font-size: 1.1em; font-weight: 700; color: #a09880;
+		text-transform: uppercase; letter-spacing: 0.1em;
+		margin: 0 0 1.2em; padding-bottom: 0.6em; border-bottom: 1px solid #333;
 	}
 	.featured-section { margin-bottom: 3.5em; }
 	.grid-section { margin-bottom: 2em; }
 
 	/* Featured card */
 	.featured-card {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0;
-		background: #242424;
-		border-radius: 14px;
-		overflow: hidden;
-		border: 1px solid #333;
-		text-decoration: none;
-		color: inherit;
+		display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+		background: #242424; border-radius: 14px; overflow: hidden;
+		border: 1px solid #333; text-decoration: none; color: inherit;
 		transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 	}
-	.featured-card:hover {
-		border-color: #E67E22;
-		transform: translateY(-3px);
-		box-shadow: 0 12px 32px rgba(0,0,0,0.4);
-	}
-	.featured-img {
-		overflow: hidden;
-		max-height: 320px;
-	}
-	.featured-img img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 0;
-		display: block;
-		transition: transform 0.4s;
-	}
+	.featured-card:hover { border-color: #E67E22; transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+	.featured-img { overflow: hidden; max-height: 280px; }
+	.featured-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; transition: transform 0.4s; }
 	.featured-card:hover .featured-img img { transform: scale(1.04); }
-	.featured-body {
-		padding: 2em 1.8em;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		gap: 0.6em;
-	}
-	.featured-body h3 {
-		font-size: 1.4em;
-		color: #F5F0E8;
-		margin: 0;
-		line-height: 1.3;
-	}
-	.read-more {
-		color: #E67E22;
-		font-size: 0.9em;
-		font-weight: 600;
-		margin-top: 0.4em;
-	}
+	.featured-body { padding: 1.8em 1.5em; display: flex; flex-direction: column; justify-content: center; gap: 0.6em; }
+	.featured-body h3 { font-size: 1.25em; color: #F5F0E8; margin: 0; line-height: 1.3; }
+	.read-more { color: #E67E22; font-size: 0.9em; font-weight: 600; margin-top: 0.4em; }
 
 	/* Post grid */
-	.post-grid {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 1.2em;
-	}
+	.post-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2em; }
 	.post-card {
-		display: flex;
-		flex-direction: column;
-		background: #242424;
-		border-radius: 12px;
-		overflow: hidden;
-		border: 1px solid #333;
-		text-decoration: none;
-		color: inherit;
-		height: 100%;
+		display: flex; flex-direction: column; background: #242424;
+		border-radius: 12px; overflow: hidden; border: 1px solid #333;
+		text-decoration: none; color: inherit; height: 100%;
 		transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 	}
-	.post-card:hover {
-		border-color: #E67E22;
-		transform: translateY(-3px);
-		box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-	}
-	.card-img {
-		overflow: hidden;
-		height: 160px;
-	}
-	.card-img img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 0;
-		display: block;
-		transition: transform 0.4s;
-	}
+	.post-card:hover { border-color: #E67E22; transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+	.card-img { overflow: hidden; height: 150px; }
+	.card-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; transition: transform 0.4s; }
 	.post-card:hover .card-img img { transform: scale(1.05); }
-	.card-body {
-		padding: 1.1em 1.2em 1.3em;
-		display: flex;
-		flex-direction: column;
-		gap: 0.4em;
-		flex: 1;
-	}
-	.card-body h4 {
-		font-size: 1em;
-		color: #F5F0E8;
-		margin: 0;
-		line-height: 1.4;
-	}
+	.card-body { padding: 1em 1.1em 1.2em; display: flex; flex-direction: column; gap: 0.4em; flex: 1; }
+	.card-body h4 { font-size: 0.95em; color: #F5F0E8; margin: 0; line-height: 1.4; }
 
 	/* Shared */
-	.tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.35em;
-	}
+	.tags { display: flex; flex-wrap: wrap; gap: 0.35em; }
 	.tag {
-		font-size: 0.72em;
-		background: rgba(192,57,43,0.2);
-		color: #E67E22;
-		padding: 0.15em 0.55em;
-		border-radius: 999px;
-		border: 1px solid rgba(192,57,43,0.3);
+		font-size: 0.72em; background: rgba(192,57,43,0.2); color: #E67E22;
+		padding: 0.15em 0.55em; border-radius: 999px; border: 1px solid rgba(192,57,43,0.3);
 	}
-	.desc {
-		font-size: 0.88em;
-		color: #a09880;
-		margin: 0;
-		line-height: 1.5;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-	}
-	.date {
-		font-size: 0.78em;
-		color: #666;
-		margin: 0;
-	}
+	.desc { font-size: 0.85em; color: #a09880; margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+	.date { font-size: 0.78em; color: #666; margin: 0; }
 
 	/* IG Section */
-	.ig-section {
-		background: #111;
-		border-top: 1px solid #333;
-		padding: 3.5em 1.5em;
-	}
-	.ig-inner {
-		max-width: 1060px;
-		margin: auto;
-	}
-	.ig-inner .section-title {
-		font-size: 1.1em;
-		font-weight: 700;
-		color: #a09880;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		margin: 0 0 0.4em;
-		padding-bottom: 0.6em;
-		border-bottom: 1px solid #333;
-	}
-	.ig-desc {
-		font-size: 0.9em;
-		color: #666;
-		margin: 0 0 1.8em;
-	}
-	.ig-grid {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1.2em;
-		justify-content: center;
-	}
-	.ig-grid .instagram-media {
-		flex: 1 1 260px;
-		max-width: 320px;
-		border-radius: 12px !important;
-		overflow: hidden;
-	}
+	.ig-section { background: #111; border-top: 1px solid #333; padding: 3.5em 1.5em; }
+	.ig-inner { max-width: 1060px; margin: auto; }
+	.ig-inner .section-title { font-size: 1.1em; font-weight: 700; color: #a09880; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.4em; padding-bottom: 0.6em; border-bottom: 1px solid #333; }
+	.ig-desc { font-size: 0.9em; color: #666; margin: 0 0 1.8em; }
+	.ig-grid { display: flex; flex-wrap: wrap; gap: 1.2em; justify-content: center; }
+	.ig-grid .instagram-media { flex: 1 1 260px; max-width: 320px; border-radius: 12px !important; overflow: hidden; }
 
 	/* RWD */
-	@media (max-width: 860px) {
+	@media (max-width: 900px) {
+		.content-with-sidebar { grid-template-columns: 1fr; }
+		.sidebar { flex-direction: row; flex-wrap: wrap; }
+		.sidebar-card { flex: 1 1 260px; }
 		.post-grid { grid-template-columns: repeat(2, 1fr); }
 	}
 	@media (max-width: 600px) {
@@ -363,5 +297,6 @@ const rest = posts.slice(1);
 		.featured-card { grid-template-columns: 1fr; }
 		.featured-img { max-height: 200px; }
 		.post-grid { grid-template-columns: 1fr; }
+		.hero-actions { flex-direction: column; align-items: flex-start; }
 	}
 </style>
