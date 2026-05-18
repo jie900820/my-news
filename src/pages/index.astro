@@ -11,120 +11,290 @@ const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const featured = posts[0];
+const rest = posts.slice(1);
 ---
 
 <!doctype html>
 <html lang="zh-TW">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			.intro {
-				margin-bottom: 2.5rem;
-				padding-bottom: 2rem;
-				border-bottom: 1px solid rgb(var(--gray-light));
-			}
-			.post-list {
-				display: flex;
-				flex-direction: column;
-				gap: 1.5rem;
-				list-style: none;
-				margin: 0;
-				padding: 0;
-			}
-			.post-list li a {
-				display: flex;
-				gap: 1.2rem;
-				text-decoration: none;
-				color: inherit;
-				align-items: flex-start;
-				padding: 1rem;
-				border-radius: 8px;
-				transition: background 0.2s;
-			}
-			.post-list li a:hover {
-				background: rgb(var(--gray-light));
-			}
-			.post-list img {
-				width: 120px;
-				height: 80px;
-				object-fit: cover;
-				border-radius: 6px;
-				flex-shrink: 0;
-			}
-			.post-info h2 {
-				font-size: 1.1rem;
-				margin: 0 0 0.3rem;
-				color: rgb(var(--black));
-				line-height: 1.3;
-			}
-			.post-info .desc {
-				font-size: 0.9rem;
-				color: rgb(var(--gray));
-				margin: 0 0 0.3rem;
-			}
-			.post-info .date {
-				font-size: 0.8rem;
-				color: rgb(var(--gray));
-			}
-			.tags {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.4rem;
-				margin-top: 0.4rem;
-			}
-			.tag {
-				font-size: 0.75rem;
-				background: rgb(var(--gray-light));
-				color: rgb(var(--gray-dark));
-				padding: 0.15rem 0.5rem;
-				border-radius: 999px;
-			}
-			@media (max-width: 720px) {
-				.post-list li a {
-					flex-direction: column;
-				}
-				.post-list img {
-					width: 100%;
-					height: 160px;
-				}
-			}
-		</style>
 	</head>
 	<body>
 		<Header />
-		<main>
-			<div class="intro">
-				<h1>🍜 台北拉麵地圖</h1>
-				<p>比較各個拉麵，供你挑選。</p>
-				<p>整理台北不同風格的拉麵店，包含湯頭特色、麵體口感、排隊狀況與個人心得。</p>
-				<p>不論你喜歡濃厚豚骨、清爽雞白湯、魚介系還是限定口味，都能快速找到適合你的拉麵。</p>
-			</div>
 
-			<h2>最新文章</h2>
-			<ul class="post-list">
-				{posts.map((post) => (
-					<li>
-						<a href={`${base}/blog/${post.id}/`}>
-							{post.data.heroImage && (
-								<Image width={120} height={80} src={post.data.heroImage} alt={post.data.title} />
-							)}
-							<div class="post-info">
-								<h2>{post.data.title}</h2>
-								<p class="desc">{post.data.description}</p>
-								<p class="date"><FormattedDate date={post.data.pubDate} /></p>
-								{post.data.tags && (
-									<div class="tags">
-										{post.data.tags.map((tag) => (
-											<span class="tag">#{tag}</span>
-										))}
+		<!-- Hero -->
+		<section class="hero">
+			<div class="hero-inner">
+				<p class="hero-eyebrow">🗺️ 台北拉麵指南</p>
+				<h1>找到你的<br/><span class="highlight">那一碗麵</span></h1>
+				<p class="hero-desc">整理台北不同風格的拉麵店，包含湯頭特色、麵體口感、排隊狀況與個人心得。不論你喜歡濃厚豚骨、清爽雞白湯、魚介系還是限定口味，都能快速找到適合你的拉麵。</p>
+				<a class="hero-btn" href={`${base}/blog`}>瀏覽所有文章 →</a>
+			</div>
+		</section>
+
+		<main>
+			<!-- Featured post -->
+			{featured && (
+				<section class="featured-section">
+					<h2 class="section-title">精選文章</h2>
+					<a class="featured-card" href={`${base}/blog/${featured.id}/`}>
+						{featured.data.heroImage && (
+							<div class="featured-img">
+								<Image width={800} height={400} src={featured.data.heroImage} alt={featured.data.title} />
+							</div>
+						)}
+						<div class="featured-body">
+							<div class="tags">
+								{featured.data.tags?.map(tag => <span class="tag">#{tag}</span>)}
+							</div>
+							<h3>{featured.data.title}</h3>
+							<p class="desc">{featured.data.description}</p>
+							<p class="date"><FormattedDate date={featured.data.pubDate} /></p>
+							<span class="read-more">閱讀全文 →</span>
+						</div>
+					</a>
+				</section>
+			)}
+
+			<!-- Post grid -->
+			<section class="grid-section">
+				<h2 class="section-title">最新文章</h2>
+				<ul class="post-grid">
+					{rest.map(post => (
+						<li>
+							<a class="post-card" href={`${base}/blog/${post.id}/`}>
+								{post.data.heroImage && (
+									<div class="card-img">
+										<Image width={400} height={220} src={post.data.heroImage} alt={post.data.title} />
 									</div>
 								)}
-							</div>
-						</a>
-					</li>
-				))}
-			</ul>
+								<div class="card-body">
+									<div class="tags">
+										{post.data.tags?.slice(0,2).map(tag => <span class="tag">#{tag}</span>)}
+									</div>
+									<h4>{post.data.title}</h4>
+									<p class="desc">{post.data.description}</p>
+									<p class="date"><FormattedDate date={post.data.pubDate} /></p>
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
+
+<style>
+	/* Hero */
+	.hero {
+		background: linear-gradient(135deg, #1a0a00 0%, #2a1000 40%, #1A1A1A 100%);
+		border-bottom: 1px solid #333;
+		padding: 5em 1.5em 4em;
+	}
+	.hero-inner {
+		max-width: 680px;
+		margin: auto;
+	}
+	.hero-eyebrow {
+		font-size: 0.9em;
+		color: #E67E22;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		margin: 0 0 0.8em;
+	}
+	.hero h1 {
+		font-size: 3em;
+		line-height: 1.15;
+		margin: 0 0 0.6em;
+		color: #F5F0E8;
+	}
+	.highlight {
+		color: #E67E22;
+	}
+	.hero-desc {
+		font-size: 1.05em;
+		color: #a09880;
+		max-width: 560px;
+		margin: 0 0 1.8em;
+		line-height: 1.8;
+	}
+	.hero-btn {
+		display: inline-block;
+		background: #C0392B;
+		color: #F5F0E8;
+		padding: 0.7em 1.6em;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 0.95em;
+		text-decoration: none;
+		transition: background 0.2s, transform 0.15s;
+	}
+	.hero-btn:hover {
+		background: #E67E22;
+		color: #fff;
+		transform: translateY(-1px);
+	}
+
+	/* Section titles */
+	.section-title {
+		font-size: 1.1em;
+		font-weight: 700;
+		color: #a09880;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin: 0 0 1.2em;
+		padding-bottom: 0.6em;
+		border-bottom: 1px solid #333;
+	}
+	.featured-section { margin-bottom: 3.5em; }
+	.grid-section { margin-bottom: 2em; }
+
+	/* Featured card */
+	.featured-card {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0;
+		background: #242424;
+		border-radius: 14px;
+		overflow: hidden;
+		border: 1px solid #333;
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+	}
+	.featured-card:hover {
+		border-color: #E67E22;
+		transform: translateY(-3px);
+		box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+	}
+	.featured-img {
+		overflow: hidden;
+		max-height: 320px;
+	}
+	.featured-img img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 0;
+		display: block;
+		transition: transform 0.4s;
+	}
+	.featured-card:hover .featured-img img { transform: scale(1.04); }
+	.featured-body {
+		padding: 2em 1.8em;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.6em;
+	}
+	.featured-body h3 {
+		font-size: 1.4em;
+		color: #F5F0E8;
+		margin: 0;
+		line-height: 1.3;
+	}
+	.read-more {
+		color: #E67E22;
+		font-size: 0.9em;
+		font-weight: 600;
+		margin-top: 0.4em;
+	}
+
+	/* Post grid */
+	.post-grid {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.2em;
+	}
+	.post-card {
+		display: flex;
+		flex-direction: column;
+		background: #242424;
+		border-radius: 12px;
+		overflow: hidden;
+		border: 1px solid #333;
+		text-decoration: none;
+		color: inherit;
+		height: 100%;
+		transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+	}
+	.post-card:hover {
+		border-color: #E67E22;
+		transform: translateY(-3px);
+		box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+	}
+	.card-img {
+		overflow: hidden;
+		height: 160px;
+	}
+	.card-img img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 0;
+		display: block;
+		transition: transform 0.4s;
+	}
+	.post-card:hover .card-img img { transform: scale(1.05); }
+	.card-body {
+		padding: 1.1em 1.2em 1.3em;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4em;
+		flex: 1;
+	}
+	.card-body h4 {
+		font-size: 1em;
+		color: #F5F0E8;
+		margin: 0;
+		line-height: 1.4;
+	}
+
+	/* Shared */
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35em;
+	}
+	.tag {
+		font-size: 0.72em;
+		background: rgba(192,57,43,0.2);
+		color: #E67E22;
+		padding: 0.15em 0.55em;
+		border-radius: 999px;
+		border: 1px solid rgba(192,57,43,0.3);
+	}
+	.desc {
+		font-size: 0.88em;
+		color: #a09880;
+		margin: 0;
+		line-height: 1.5;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.date {
+		font-size: 0.78em;
+		color: #666;
+		margin: 0;
+	}
+
+	/* RWD */
+	@media (max-width: 860px) {
+		.post-grid { grid-template-columns: repeat(2, 1fr); }
+	}
+	@media (max-width: 600px) {
+		.hero h1 { font-size: 2em; }
+		.featured-card { grid-template-columns: 1fr; }
+		.featured-img { max-height: 200px; }
+		.post-grid { grid-template-columns: 1fr; }
+	}
+</style>
