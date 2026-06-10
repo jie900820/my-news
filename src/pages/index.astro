@@ -39,6 +39,9 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 
 		<Header />
 
+		<!-- 深淺色切換按鈕 -->
+		<button id="theme-toggle" aria-label="切換深淺色模式">🌙</button>
+
 		<!-- Hero -->
 		<section class="hero">
 			<div class="hero-inner">
@@ -168,7 +171,30 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 			</div>
 		</section>
 
+		<!-- 回到頂部 -->
+		<button id="back-to-top" aria-label="回到頂部">↑</button>
+
 		<Footer />
+
+		<script>
+			// 深淺色切換
+			const toggle = document.getElementById('theme-toggle');
+			const root = document.documentElement;
+			const saved = localStorage.getItem('theme') || 'dark';
+			if (saved === 'light') { root.setAttribute('data-theme', 'light'); toggle.textContent = '☀️'; }
+
+			toggle.addEventListener('click', () => {
+				const isLight = root.getAttribute('data-theme') === 'light';
+				root.setAttribute('data-theme', isLight ? 'dark' : 'light');
+				toggle.textContent = isLight ? '🌙' : '☀️';
+				localStorage.setItem('theme', isLight ? 'dark' : 'light');
+			});
+
+			// 回到頂部
+			const topBtn = document.getElementById('back-to-top');
+			window.addEventListener('scroll', () => topBtn.classList.toggle('visible', window.scrollY > 400));
+			topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+		</script>
 	</body>
 </html>
 
@@ -284,6 +310,47 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 	.ig-desc { font-size: 0.9em; color: #666; margin: 0 0 1.8em; }
 	.ig-grid { display: flex; flex-wrap: wrap; gap: 1.2em; justify-content: center; }
 	.ig-grid .instagram-media { flex: 1 1 260px; max-width: 320px; border-radius: 12px !important; overflow: hidden; }
+
+	/* 深淺色切換 */
+	#theme-toggle {
+		position: fixed; top: 70px; right: 1.2em;
+		background: #242424; border: 1px solid #444; color: #F5F0E8;
+		width: 40px; height: 40px; border-radius: 50%;
+		font-size: 1.1em; cursor: pointer; z-index: 200;
+		box-shadow: 0 2px 8px rgba(0,0,0,0.3); transition: all 0.2s;
+	}
+	#theme-toggle:hover { border-color: #E67E22; transform: scale(1.1); }
+
+	/* 淺色模式 */
+	:global([data-theme="light"]) {
+		--bg: #FAF6F0;
+		--bg-card: #fff;
+		--bg-card-hover: #f5f0e8;
+		--text: #2C2C2C;
+		--text-muted: #666;
+		--border: #ddd;
+	}
+	:global([data-theme="light"]) body { background: #FAF6F0; color: #2C2C2C; }
+	:global([data-theme="light"]) .hero { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 40%, #FAF6F0 100%); }
+	:global([data-theme="light"]) .hero h1 { color: #2C2C2C; }
+	:global([data-theme="light"]) .featured-card,
+	:global([data-theme="light"]) .post-card,
+	:global([data-theme="light"]) .sidebar-card { background: #fff; border-color: #ddd; }
+	:global([data-theme="light"]) .featured-body h3,
+	:global([data-theme="light"]) .card-body h4 { color: #2C2C2C; }
+	:global([data-theme="light"]) #theme-toggle { background: #fff; color: #2C2C2C; border-color: #ddd; }
+
+	/* 回到頂部 */
+	#back-to-top {
+		position: fixed; bottom: 2em; right: 2em;
+		width: 44px; height: 44px; border-radius: 50%;
+		background: #C0392B; color: #fff; border: none;
+		font-size: 1.2em; cursor: pointer; opacity: 0;
+		transform: translateY(10px); transition: all 0.3s;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 100;
+	}
+	#back-to-top.visible { opacity: 1; transform: translateY(0); }
+	#back-to-top:hover { background: #E67E22; transform: translateY(-2px); }
 
 	/* RWD */
 	@media (max-width: 900px) {
