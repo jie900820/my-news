@@ -145,29 +145,73 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 			</div>
 		</main>
 
-		<!-- IG 精選 -->
+		<!-- 拉麵精選 -->
 		<section class="ig-section">
 			<div class="ig-inner">
-				<h2 class="section-title">📸 IG 拉麵精選</h2>
-				<p class="ig-desc">來自 Instagram 的拉麵美照，看看大家都在吃什麼</p>
+				<h2 class="section-title">📸 拉麵精選特輯</h2>
+				<p class="ig-desc">編輯精選，那些讓人忍不住流口水的一碗</p>
 				<div class="ig-grid">
-					<blockquote class="instagram-media"
-						data-instgrm-permalink="https://www.instagram.com/p/C7k2v3ySq0j/"
-						data-instgrm-version="14"
-						style="max-width:320px; min-width:260px; width:100%;">
-					</blockquote>
-					<blockquote class="instagram-media"
-						data-instgrm-permalink="https://www.instagram.com/p/C6tqW2yyIAL/"
-						data-instgrm-version="14"
-						style="max-width:320px; min-width:260px; width:100%;">
-					</blockquote>
-					<blockquote class="instagram-media"
-						data-instgrm-permalink="https://www.instagram.com/p/C5k8v3ySq0j/"
-						data-instgrm-version="14"
-						style="max-width:320px; min-width:260px; width:100%;">
-					</blockquote>
+					<div class="ig-card">
+						<div class="ig-img-wrap">
+							<img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80" alt="博多豚骨拉麵" loading="lazy" />
+							<span class="ig-badge">豚骨</span>
+						</div>
+						<div class="ig-card-body">
+							<p class="ig-caption">🍖 博多豚骨｜乳白濃湯，細麵滑順，一口就愛上的經典滋味</p>
+							<span class="ig-tag">#豚骨拉麵 #博多 #台北美食</span>
+						</div>
+					</div>
+					<div class="ig-card">
+						<div class="ig-img-wrap">
+							<img src="https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=600&q=80" alt="札幌味噌拉麵" loading="lazy" />
+							<span class="ig-badge">味噌</span>
+						</div>
+						<div class="ig-card-body">
+							<p class="ig-caption">🧈 札幌味噌｜奶油慢慢融化的瞬間，是北海道才有的幸福</p>
+							<span class="ig-tag">#味噌拉麵 #札幌 #北海道</span>
+						</div>
+					</div>
+					<div class="ig-card">
+						<div class="ig-img-wrap">
+							<img src="https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=600&q=80" alt="東京醬油拉麵" loading="lazy" />
+							<span class="ig-badge">醬油</span>
+						</div>
+						<div class="ig-card-body">
+							<p class="ig-caption">🫙 東京醬油｜清澈琥珀色湯頭，越喝越回甘的百年底蘊</p>
+							<span class="ig-tag">#醬油拉麵 #東京 #清湯</span>
+						</div>
+					</div>
+					<div class="ig-card">
+						<div class="ig-img-wrap">
+							<img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=600&q=80" alt="叉燒特寫" loading="lazy" />
+							<span class="ig-badge">叉燒</span>
+						</div>
+						<div class="ig-card-body">
+							<p class="ig-caption">🥩 職人叉燒｜入口即化的五花肉，醬香濃郁，每一片都是藝術</p>
+							<span class="ig-tag">#叉燒 #職人 #拉麵配料</span>
+						</div>
+					</div>
+					<div class="ig-card">
+						<div class="ig-img-wrap">
+							<img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=600&q=80" alt="函館鹽味拉麵" loading="lazy" />
+							<span class="ig-badge">鹽味</span>
+						</div>
+						<div class="ig-card-body">
+							<p class="ig-caption">🌊 函館鹽味｜最純粹的清湯，考驗食材品質的極簡之作</p>
+							<span class="ig-tag">#鹽味拉麵 #函館 #北海道海鮮</span>
+						</div>
+					</div>
+					<div class="ig-card">
+						<div class="ig-img-wrap">
+							<img src="https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=600&q=80" alt="拉麵店氛圍" loading="lazy" />
+							<span class="ig-badge">氛圍</span>
+						</div>
+						<div class="ig-card-body">
+							<p class="ig-caption">🏮 深夜屋台｜福岡中洲的路邊攤，一碗熱湯，是旅行最美的句點</p>
+							<span class="ig-tag">#屋台 #福岡 #深夜食堂</span>
+						</div>
+					</div>
 				</div>
-				<script async src="https://www.instagram.com/embed.js"></script>
 			</div>
 		</section>
 
@@ -303,13 +347,64 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 	.desc { font-size: 0.85em; color: #a09880; margin: 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 	.date { font-size: 0.78em; color: #666; margin: 0; }
 
-	/* IG Section */
+	/* 精選特輯 */
 	.ig-section { background: #111; border-top: 1px solid #333; padding: 3.5em 1.5em; }
 	.ig-inner { max-width: 1060px; margin: auto; }
 	.ig-inner .section-title { font-size: 1.1em; font-weight: 700; color: #a09880; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.4em; padding-bottom: 0.6em; border-bottom: 1px solid #333; }
 	.ig-desc { font-size: 0.9em; color: #666; margin: 0 0 1.8em; }
-	.ig-grid { display: flex; flex-wrap: wrap; gap: 1.2em; justify-content: center; }
-	.ig-grid .instagram-media { flex: 1 1 260px; max-width: 320px; border-radius: 12px !important; overflow: hidden; }
+	.ig-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.2em;
+	}
+	.ig-card {
+		background: #1e1e1e;
+		border: 1px solid #333;
+		border-radius: 12px;
+		overflow: hidden;
+		transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+	}
+	.ig-card:hover {
+		border-color: #E67E22;
+		transform: translateY(-3px);
+		box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+	}
+	.ig-img-wrap {
+		position: relative;
+		height: 200px;
+		overflow: hidden;
+	}
+	.ig-img-wrap img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 0;
+		display: block;
+		transition: transform 0.4s;
+	}
+	.ig-card:hover .ig-img-wrap img { transform: scale(1.06); }
+	.ig-badge {
+		position: absolute;
+		top: 0.7em; left: 0.7em;
+		background: rgba(192,57,43,0.85);
+		color: #fff;
+		font-size: 0.72em;
+		font-weight: 700;
+		padding: 0.25em 0.7em;
+		border-radius: 999px;
+		backdrop-filter: blur(4px);
+	}
+	.ig-card-body { padding: 0.9em 1em 1.1em; }
+	.ig-caption {
+		font-size: 0.85em;
+		color: #d4cfc7;
+		margin: 0 0 0.5em;
+		line-height: 1.5;
+	}
+	.ig-tag {
+		font-size: 0.75em;
+		color: #E67E22;
+	}
 
 	/* 深淺色切換 */
 	#theme-toggle {
@@ -358,6 +453,7 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 		.sidebar { flex-direction: row; flex-wrap: wrap; }
 		.sidebar-card { flex: 1 1 260px; }
 		.post-grid { grid-template-columns: repeat(2, 1fr); }
+		.ig-grid { grid-template-columns: repeat(2, 1fr); }
 	}
 	@media (max-width: 600px) {
 		.hero h1 { font-size: 2em; }
@@ -365,5 +461,6 @@ const pageUrl = 'https://jie900820.github.io/my-news/';
 		.featured-img { max-height: 200px; }
 		.post-grid { grid-template-columns: 1fr; }
 		.hero-actions { flex-direction: column; align-items: flex-start; }
+		.ig-grid { grid-template-columns: 1fr; }
 	}
 </style>
