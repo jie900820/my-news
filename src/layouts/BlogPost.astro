@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
@@ -7,6 +8,13 @@ import Header from '../components/Header.astro';
 
 const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.props;
 const pageUrl = `https://jie900820.github.io/my-news${Astro.url.pathname}`;
+
+// 相關文章：同 tag 的其他文章
+const allPosts = await getCollection('blog');
+const related = allPosts
+  .filter(p => p.data.title !== title && p.data.tags?.some(t => tags?.includes(t)))
+  .slice(0, 3);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <html lang="zh-TW">
@@ -14,6 +22,9 @@ const pageUrl = `https://jie900820.github.io/my-news${Astro.url.pathname}`;
 		<BaseHead title={title} description={description} />
 	</head>
 	<body>
+		<!-- 閱讀進度條 -->
+		<div id="progress-bar"></div>
+
 		<!-- Facebook SDK -->
 		<div id="fb-root"></div>
 		<script>
@@ -37,105 +48,243 @@ const pageUrl = `https://jie900820.github.io/my-news${Astro.url.pathname}`;
 						<Image width={1020} height={480} src={heroImage} alt={title} />
 					</div>
 				)}
-				<div class="prose">
-					<header class="post-header">
-						<div class="meta">
-							<span class="date"><FormattedDate date={pubDate} /></span>
-							{updatedDate && (
-								<span class="updated">· 更新於 <FormattedDate date={updatedDate} /></span>
-							)}
+
+				<div class="article-layout">
+					<!-- TOC 側邊欄 -->
+					<aside class="toc-sidebar">
+						<div class="toc-card">
+							<p class="toc-title">📋 文章目錄</p>
+							<nav id="toc"></nav>
 						</div>
-						<h1>{title}</h1>
-						<p class="description">{description}</p>
-						{tags && tags.length > 0 && (
-							<div class="tags">
-								{tags.map(tag => <span class="tag">#{tag}</span>)}
+					</aside>
+
+					<div class="prose">
+						<header class="post-header">
+							<div class="meta">
+								<span class="date"><FormattedDate date={pubDate} /></span>
+								{updatedDate && <span class="updated">· 更新於 <FormattedDate date={updatedDate} /></span>}
+							</div>
+							<h1>{title}</h1>
+							<p class="description">{description}</p>
+							{tags && tags.length > 0 && (
+								<div class="tags">
+									{tags.map(tag => <span class="tag">#{tag}</span>)}
+								</div>
+							)}
+							<div class="fb-actions">
+								<div class="fb-like" data-href={pageUrl} data-layout="button_count" data-action="like" data-size="large"></div>
+								<div class="fb-share-button" data-href={pageUrl} data-layout="button" data-size="large"></div>
+							</div>
+							<hr />
+						</header>
+
+						<div id="article-content">
+							<slot />
+						</div>
+
+						<!-- 相關文章 -->
+						{related.length > 0 && (
+							<div class="related-section">
+								<h2 class="related-title">🍜 你可能也喜歡</h2>
+								<div class="related-grid">
+									{related.map(post => (
+										<a class="related-card" href={`${base}/blog/${post.id}/`}>
+											{post.data.heroImage && (
+												<div class="related-img">
+													<Image width={300} height={160} src={post.data.heroImage} alt={post.data.title} />
+												</div>
+											)}
+											<div class="related-body">
+												<div class="tags">
+													{post.data.tags?.slice(0,2).map(t => <span class="tag">#{t}</span>)}
+												</div>
+												<h4>{post.data.title}</h4>
+												<p class="desc">{post.data.description}</p>
+											</div>
+										</a>
+									))}
+								</div>
 							</div>
 						)}
 
-						<!-- FB 分享 + Like 按鈕列 -->
-						<div class="fb-actions">
-							<div class="fb-like"
-								data-href={pageUrl}
-								data-width=""
-								data-layout="button_count"
-								data-action="like"
-								data-size="large"
-								data-share="false">
-							</div>
-							<div class="fb-share-button"
-								data-href={pageUrl}
-								data-layout="button"
-								data-size="large">
-							</div>
-						</div>
-
-						<hr />
-					</header>
-
-					<slot />
-
-					<!-- FB 留言區 -->
-					<div class="comments-section">
-						<h2 class="comments-title">💬 留言討論</h2>
-						<p class="comments-desc">用你的 Facebook 帳號留言，和其他拉麵愛好者交流</p>
-						<div class="fb-comments"
-							data-href={pageUrl}
-							data-width="100%"
-							data-numposts="5"
-							data-colorscheme="dark">
+						<!-- FB 留言區 -->
+						<div class="comments-section">
+							<h2 class="comments-title">💬 留言討論</h2>
+							<p class="comments-desc">用你的 Facebook 帳號留言，和其他拉麵愛好者交流</p>
+							<div class="fb-comments" data-href={pageUrl} data-width="100%" data-numposts="5" data-colorscheme="dark"></div>
 						</div>
 					</div>
 				</div>
 			</article>
 		</main>
+
+		<!-- 回到頂部按鈕 -->
+		<button id="back-to-top" aria-label="回到頂部">↑</button>
+
 		<Footer />
+
+		<script>
+			// ── 閱讀進度條 ──
+			const bar = document.getElementById('progress-bar');
+			window.addEventListener('scroll', () => {
+				const doc = document.documentElement;
+				const scrolled = doc.scrollTop;
+				const total = doc.scrollHeight - doc.clientHeight;
+				bar.style.width = (scrolled / total * 100) + '%';
+			});
+
+			// ── 自動生成 TOC ──
+			const content = document.getElementById('article-content');
+			const toc = document.getElementById('toc');
+			const headings = content.querySelectorAll('h2, h3');
+			if (headings.length > 0) {
+				headings.forEach((h, i) => {
+					const id = `heading-${i}`;
+					h.id = id;
+					const a = document.createElement('a');
+					a.href = `#${id}`;
+					a.textContent = h.textContent;
+					a.className = h.tagName === 'H3' ? 'toc-h3' : 'toc-h2';
+					toc.appendChild(a);
+				});
+			} else {
+				document.querySelector('.toc-sidebar').style.display = 'none';
+			}
+
+			// TOC active highlight on scroll
+			const observer = new IntersectionObserver(entries => {
+				entries.forEach(e => {
+					const link = toc.querySelector(`a[href="#${e.target.id}"]`);
+					if (link) link.classList.toggle('active', e.isIntersecting);
+				});
+			}, { rootMargin: '0px 0px -60% 0px' });
+			headings.forEach(h => observer.observe(h));
+
+			// ── 回到頂部按鈕 ──
+			const btn = document.getElementById('back-to-top');
+			window.addEventListener('scroll', () => {
+				btn.classList.toggle('visible', window.scrollY > 400);
+			});
+			btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+		</script>
 	</body>
 </html>
 
 <style>
-	main { width: calc(100% - 2em); max-width: 100%; margin: 0; padding: 0; }
-	.hero-image { width: 100%; max-height: 460px; overflow: hidden; }
+	/* 進度條 */
+	#progress-bar {
+		position: fixed; top: 0; left: 0; height: 3px;
+		background: linear-gradient(90deg, #C0392B, #E67E22);
+		width: 0%; z-index: 9999; transition: width 0.1s;
+	}
+
+	main { width: 100%; margin: 0; padding: 0; }
+
+	.hero-image { width: 100%; max-height: 480px; overflow: hidden; }
 	.hero-image img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; }
-	.prose { width: 720px; max-width: calc(100% - 2em); margin: auto; padding: 2.5em 1em 4em; }
+
+	/* 文章雙欄佈局 */
+	.article-layout {
+		max-width: 1100px;
+		margin: auto;
+		padding: 2.5em 1.5em 4em;
+		display: grid;
+		grid-template-columns: 220px 1fr;
+		gap: 2.5em;
+		align-items: start;
+	}
+
+	/* TOC */
+	.toc-sidebar { position: sticky; top: 80px; }
+	.toc-card {
+		background: #242424;
+		border: 1px solid #333;
+		border-radius: 12px;
+		padding: 1.2em 1em;
+	}
+	.toc-title {
+		font-size: 0.82em; font-weight: 700; color: #a09880;
+		text-transform: uppercase; letter-spacing: 0.08em;
+		margin: 0 0 0.8em; padding-bottom: 0.6em; border-bottom: 1px solid #333;
+	}
+	#toc { display: flex; flex-direction: column; gap: 0.1em; }
+	#toc a {
+		font-size: 0.82em; color: #888; text-decoration: none;
+		padding: 0.3em 0.5em; border-radius: 5px; line-height: 1.4;
+		border-left: 2px solid transparent; transition: all 0.2s;
+	}
+	#toc a.toc-h3 { padding-left: 1.2em; font-size: 0.78em; }
+	#toc a:hover { color: #F5F0E8; background: rgba(255,255,255,0.05); }
+	#toc a.active { color: #E67E22; border-left-color: #E67E22; background: rgba(230,126,34,0.08); }
+
+	/* Prose */
+	.prose { min-width: 0; }
 	.post-header { margin-bottom: 2em; }
 	.meta { font-size: 0.85em; color: #666; margin-bottom: 0.8em; }
 	.updated { color: #555; }
-	.post-header h1 { font-size: 2.2em; line-height: 1.25; margin: 0 0 0.5em; color: #F5F0E8; }
+	.post-header h1 { font-size: 2.1em; line-height: 1.25; margin: 0 0 0.5em; color: #F5F0E8; }
 	.description { font-size: 1.05em; color: #a09880; margin: 0 0 1em; line-height: 1.7; }
 	.tags { display: flex; flex-wrap: wrap; gap: 0.4em; margin-bottom: 1em; }
-	.tag { font-size: 0.78em; background: rgba(192,57,43,0.2); color: #E67E22; padding: 0.2em 0.6em; border-radius: 999px; border: 1px solid rgba(192,57,43,0.3); }
-
-	/* FB 按鈕列 */
-	.fb-actions {
-		display: flex;
-		align-items: center;
-		gap: 1em;
-		margin: 1em 0 1.2em;
-		flex-wrap: wrap;
-	}
-
+	.tag { font-size: 0.75em; background: rgba(192,57,43,0.2); color: #E67E22; padding: 0.2em 0.6em; border-radius: 999px; border: 1px solid rgba(192,57,43,0.3); }
+	.fb-actions { display: flex; align-items: center; gap: 1em; margin: 1em 0 1.2em; flex-wrap: wrap; }
 	hr { border: none; border-top: 1px solid #333; margin: 1.5em 0 2em; }
 
-	/* 留言區 */
-	.comments-section {
-		margin-top: 3.5em;
-		padding-top: 2.5em;
-		border-top: 1px solid #333;
-	}
-	.comments-title {
-		font-size: 1.3em;
-		color: #F5F0E8;
-		margin: 0 0 0.3em;
-	}
-	.comments-desc {
-		font-size: 0.88em;
-		color: #666;
-		margin: 0 0 1.5em;
-	}
+	/* 文章內容排版 */
+	#article-content { color: #d4cfc7; line-height: 1.9; font-size: 1.02em; }
+	#article-content h2 { font-size: 1.5em; color: #F5F0E8; margin: 2em 0 0.6em; padding-bottom: 0.4em; border-bottom: 1px solid #333; }
+	#article-content h3 { font-size: 1.2em; color: #F5F0E8; margin: 1.5em 0 0.5em; }
+	#article-content p { margin-bottom: 1.4em; }
+	#article-content ul, #article-content ol { padding-left: 1.5em; margin-bottom: 1.4em; }
+	#article-content li { margin-bottom: 0.4em; }
+	#article-content strong { color: #F5F0E8; }
+	#article-content table { width: 100%; border-collapse: collapse; margin: 1.5em 0; }
+	#article-content th { background: #2c2c2c; color: #E67E22; padding: 0.6em 1em; text-align: left; border-bottom: 2px solid #E67E22; font-size: 0.9em; }
+	#article-content td { padding: 0.6em 1em; border-bottom: 1px solid #333; }
+	#article-content blockquote { border-left: 3px solid #E67E22; padding: 0.6em 1.2em; margin: 1.5em 0; background: #242424; border-radius: 0 8px 8px 0; color: #a09880; }
 
-	@media (max-width: 720px) {
+	/* 相關文章 */
+	.related-section { margin-top: 3.5em; padding-top: 2.5em; border-top: 1px solid #333; }
+	.related-title { font-size: 1.2em; color: #F5F0E8; margin: 0 0 1.2em; }
+	.related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1em; }
+	.related-card {
+		background: #242424; border: 1px solid #333; border-radius: 10px;
+		overflow: hidden; text-decoration: none; color: inherit;
+		transition: border-color 0.2s, transform 0.2s;
+	}
+	.related-card:hover { border-color: #E67E22; transform: translateY(-2px); }
+	.related-img { height: 120px; overflow: hidden; }
+	.related-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; transition: transform 0.3s; }
+	.related-card:hover .related-img img { transform: scale(1.05); }
+	.related-body { padding: 0.8em 1em 1em; }
+	.related-body h4 { font-size: 0.88em; color: #F5F0E8; margin: 0.4em 0 0.3em; line-height: 1.4; }
+	.desc { font-size: 0.78em; color: #888; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+	/* 留言區 */
+	.comments-section { margin-top: 3.5em; padding-top: 2.5em; border-top: 1px solid #333; }
+	.comments-title { font-size: 1.3em; color: #F5F0E8; margin: 0 0 0.3em; }
+	.comments-desc { font-size: 0.88em; color: #666; margin: 0 0 1.5em; }
+
+	/* 回到頂部 */
+	#back-to-top {
+		position: fixed; bottom: 2em; right: 2em;
+		width: 44px; height: 44px; border-radius: 50%;
+		background: #C0392B; color: #fff; border: none;
+		font-size: 1.2em; cursor: pointer; opacity: 0;
+		transform: translateY(10px); transition: all 0.3s;
+		box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 100;
+	}
+	#back-to-top.visible { opacity: 1; transform: translateY(0); }
+	#back-to-top:hover { background: #E67E22; transform: translateY(-2px); }
+
+	@media (max-width: 860px) {
+		.article-layout { grid-template-columns: 1fr; }
+		.toc-sidebar { position: static; }
+		.related-grid { grid-template-columns: 1fr 1fr; }
+	}
+	@media (max-width: 600px) {
 		.post-header h1 { font-size: 1.6em; }
 		.hero-image { max-height: 240px; }
+		.related-grid { grid-template-columns: 1fr; }
+		.article-layout { padding: 1.5em 1em 3em; }
 	}
 </style>
