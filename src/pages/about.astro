@@ -1,32 +1,230 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts.js';
 ---
 
-<Layout
-	title="關於麵道一筋"
-	description="我們對拉麵的熱情與堅持"
-	pubDate={new Date('2024-01-01')}
-	heroImage={AboutHeroImage}
->
-	<p>
-		「麵道一筋」——意指一生只走一條路，那條路就是拉麵。這個網站誕生於對拉麵的純粹熱愛，我們相信每一碗拉麵背後，都有一個值得被說出來的故事。
-	</p>
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<BaseHead title={`關於我們 — ${SITE_TITLE}`} description="台北拉麵地圖的故事、理念與我們對拉麵的熱情" />
+	</head>
+	<body>
+		<Header />
 
-	<p>
-		從第一次踏進博多的小店，看著師傅凌晨三點就開始熬煮豚骨湯頭，那股撲鼻而來的濃郁香氣，徹底改變了我對「一碗麵」的認知。拉麵不是快餐，是職人用時間換來的藝術。
-	</p>
+		<!-- Hero Banner -->
+		<div class="about-hero">
+			<img src="https://images.unsplash.com/photo-1557872943-16a5ac26437e?w=1400&q=80" alt="拉麵店氛圍" />
+			<div class="hero-overlay">
+				<h1>關於台北拉麵地圖</h1>
+				<p>一生只走一條路，那條路就是拉麵</p>
+			</div>
+		</div>
 
-	<h2>我們關注的面向</h2>
-	<ul>
-		<li><strong>湯頭研究</strong>——豚骨、雞白湯、魚介、清湯的熬製哲學</li>
-		<li><strong>麵條工藝</strong>——加水率、熟成時間對口感的影響</li>
-		<li><strong>配料學問</strong>——叉燒、溏心蛋、筍乾、海苔的搭配藝術</li>
-		<li><strong>店家探訪</strong>——日本各地隱藏版名店實地報導</li>
-		<li><strong>在家自製</strong>——讓你在家也能煮出職人等級的拉麵</li>
-	</ul>
+		<main>
 
-	<p>
-		無論你是拉麵新手，還是已經跑遍日本各地尋麵的老饕，這裡都有你想要的內容。讓我們一起，把對拉麵的熱情化為文字，傳遞給每一個愛麵的靈魂。
-	</p>
-</Layout>
+			<!-- 故事區塊 -->
+			<section class="section story-section">
+				<div class="text-img-grid">
+					<div class="text-block">
+						<h2>🍜 為什麼做這個網站？</h2>
+						<p>
+							「麵道一筋」——意指一生只走一條路，那條路就是拉麵。這個網站誕生於對拉麵的純粹熱愛，我們相信每一碗拉麵背後，都有一個值得被說出來的故事。
+						</p>
+						<p>
+							從第一次踏進博多的小店，看著師傅凌晨三點就開始熬煮豚骨湯頭，那股撲鼻而來的濃郁香氣，徹底改變了我對「一碗麵」的認知。拉麵不是快餐，是職人用時間換來的藝術。
+						</p>
+						<p>
+							台北的拉麵市場近年百花齊放，日系品牌、本土創業、隱藏小店百家爭鳴。我們希望做一個真正有用的指南，幫你在這片麵海中，快速找到屬於你的那一碗。
+						</p>
+					</div>
+					<div class="img-block">
+						<img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700&q=80" alt="豚骨拉麵特寫" />
+					</div>
+				</div>
+			</section>
+
+			<!-- 我們關注的面向 -->
+			<section class="section focus-section">
+				<h2 class="section-title">我們關注的面向</h2>
+				<div class="focus-grid">
+					<div class="focus-card">
+						<div class="focus-img">
+							<img src="https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=500&q=80" alt="湯頭" />
+						</div>
+						<div class="focus-body">
+							<h3>🥣 湯頭研究</h3>
+							<p>豚骨、雞白湯、魚介、清湯的熬製哲學，深入了解每種湯底的製作工藝</p>
+						</div>
+					</div>
+					<div class="focus-card">
+						<div class="focus-img">
+							<img src="https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=500&q=80" alt="麵條" />
+						</div>
+						<div class="focus-body">
+							<h3>🌾 麵條工藝</h3>
+							<p>加水率、熟成時間對口感的影響，從細直麵到粗捲麵的選擇學問</p>
+						</div>
+					</div>
+					<div class="focus-card">
+						<div class="focus-img">
+							<img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=500&q=80" alt="叉燒配料" />
+						</div>
+						<div class="focus-body">
+							<h3>🥩 配料學問</h3>
+							<p>叉燒、溏心蛋、筍乾、海苔的搭配藝術，每種配料都有它不可取代的角色</p>
+						</div>
+					</div>
+					<div class="focus-card">
+						<div class="focus-img">
+							<img src="https://images.unsplash.com/photo-1555126634-323283e090fa?w=500&q=80" alt="店家探訪" />
+						</div>
+						<div class="focus-body">
+							<h3>🗺️ 店家探訪</h3>
+							<p>台北與日本各地隱藏版名店實地報導，附排隊時間與必點品項建議</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- 數字區塊 -->
+			<section class="stats-section">
+				<div class="stats-grid">
+					<div class="stat-item">
+						<span class="stat-num">7</span>
+						<span class="stat-label">篇深度文章</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-num">4</span>
+						<span class="stat-label">大拉麵流派</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-num">5+</span>
+						<span class="stat-label">台北推薦店家</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-num">∞</span>
+						<span class="stat-label">對拉麵的熱情</span>
+					</div>
+				</div>
+			</section>
+
+			<!-- 結語 -->
+			<section class="section closing-section">
+				<div class="text-img-grid reverse">
+					<div class="img-block">
+						<img src="https://images.unsplash.com/photo-1610003228613-b6e7e4b91cde?w=700&q=80" alt="鹽味拉麵" />
+					</div>
+					<div class="text-block">
+						<h2>💌 給每一位拉麵愛好者</h2>
+						<p>
+							無論你是拉麵新手，還是已經跑遍日本各地尋麵的老饕，這裡都有你想要的內容。
+						</p>
+						<p>
+							讓我們一起，把對拉麵的熱情化為文字，傳遞給每一個愛麵的靈魂。每一篇文章，都是一次對那碗麵的致敬。
+						</p>
+						<a class="cta-btn" href={`${import.meta.env.BASE_URL}blog`}>開始探索文章 →</a>
+					</div>
+				</div>
+			</section>
+
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	/* Hero */
+	.about-hero {
+		position: relative; height: 360px; overflow: hidden;
+	}
+	.about-hero img {
+		width: 100%; height: 100%; object-fit: cover;
+		border-radius: 0; display: block; filter: brightness(0.4);
+	}
+	.hero-overlay {
+		position: absolute; inset: 0;
+		display: flex; flex-direction: column;
+		align-items: center; justify-content: center;
+		text-align: center; padding: 1em;
+	}
+	.hero-overlay h1 {
+		font-size: 2.6em; color: #F5F0E8;
+		margin: 0 0 0.3em; text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+	}
+	.hero-overlay p { color: #E67E22; font-size: 1.1em; margin: 0; font-style: italic; }
+
+	main { max-width: 1000px; margin: auto; padding: 3em 1.5em 5em; }
+
+	.section { margin-bottom: 4em; }
+
+	/* 文字+圖片並排 */
+	.text-img-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 3em;
+		align-items: center;
+	}
+	.text-img-grid.reverse { direction: rtl; }
+	.text-img-grid.reverse > * { direction: ltr; }
+	.text-block h2 { font-size: 1.6em; color: #F5F0E8; margin: 0 0 0.8em; }
+	.text-block p { color: #a09880; line-height: 1.8; margin-bottom: 1em; }
+	.img-block { border-radius: 14px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+	.img-block img { width: 100%; display: block; border-radius: 0; aspect-ratio: 4/3; object-fit: cover; }
+
+	/* 關注面向 */
+	.section-title {
+		font-size: 1.1em; font-weight: 700; color: #a09880;
+		text-transform: uppercase; letter-spacing: 0.1em;
+		margin: 0 0 1.5em; padding-bottom: 0.6em; border-bottom: 1px solid #333;
+	}
+	.focus-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.2em;
+	}
+	.focus-card {
+		background: #242424; border: 1px solid #333; border-radius: 12px;
+		overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+	}
+	.focus-card:hover { border-color: #E67E22; transform: translateY(-3px); }
+	.focus-img { height: 160px; overflow: hidden; }
+	.focus-img img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; display: block; transition: transform 0.4s; }
+	.focus-card:hover .focus-img img { transform: scale(1.05); }
+	.focus-body { padding: 1.2em; }
+	.focus-body h3 { font-size: 1em; color: #F5F0E8; margin: 0 0 0.4em; }
+	.focus-body p { font-size: 0.85em; color: #888; margin: 0; line-height: 1.6; }
+
+	/* 數字統計 */
+	.stats-section {
+		background: linear-gradient(135deg, #1a0a00, #2a1000, #1A1A1A);
+		border: 1px solid #333; border-radius: 16px;
+		padding: 2.5em 2em; margin-bottom: 4em;
+	}
+	.stats-grid {
+		display: grid; grid-template-columns: repeat(4, 1fr);
+		gap: 1em; text-align: center;
+	}
+	.stat-item { display: flex; flex-direction: column; gap: 0.3em; }
+	.stat-num { font-size: 2.8em; font-weight: 700; color: #E67E22; line-height: 1; }
+	.stat-label { font-size: 0.85em; color: #888; }
+
+	/* CTA 按鈕 */
+	.cta-btn {
+		display: inline-block; background: #C0392B; color: #F5F0E8;
+		padding: 0.8em 1.8em; border-radius: 8px; font-weight: 600;
+		text-decoration: none; margin-top: 0.5em;
+		transition: background 0.2s, transform 0.15s;
+	}
+	.cta-btn:hover { background: #E67E22; color: #fff; transform: translateY(-2px); }
+
+	@media (max-width: 720px) {
+		.about-hero { height: 240px; }
+		.hero-overlay h1 { font-size: 1.8em; }
+		.text-img-grid { grid-template-columns: 1fr; gap: 1.5em; }
+		.text-img-grid.reverse { direction: ltr; }
+		.focus-grid { grid-template-columns: 1fr; }
+		.stats-grid { grid-template-columns: repeat(2, 1fr); }
+	}
+</style>
